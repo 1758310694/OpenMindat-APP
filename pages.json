@@ -1,0 +1,83 @@
+{
+	"pages": [ //pages数组中第一项表示应用启动页，参考：https://uniapp.dcloud.io/collocation/pages
+		{
+			"path" : "pages/tabBar/index/index",
+			"style" : 
+			{
+				"navigationBarTitleText" : "Mineral",
+				"navigationBarBackgroundColor": "#158BB8",
+				"navigationBarTextStyle": "white",
+				"enablePullDownRefresh": false
+				
+			}
+		},
+		{
+			"path" : "pages/tabBar/search/search",
+			"style" : 
+			{
+				"navigationBarTitleText" : "Search",
+				"navigationBarBackgroundColor": "#158BB8",
+				"navigationBarTextStyle": "white",
+				"enablePullDownRefresh": false
+			}
+		},
+		{
+			"path" : "pages/tabBar/study/study",
+			"style" : 
+			{
+				"navigationBarTitleText" : "Study",
+				"navigationBarBackgroundColor": "#158BB8",
+				"navigationBarTextStyle": "white",
+				"enablePullDownRefresh": false
+			}
+		}
+		// {
+		// 	"path" : "pages/tabBar/mine/mine",
+		// 	"style" : 
+		// 	{
+		// 		"navigationBarTitleText" : "Mine",
+		// 		"navigationBarBackgroundColor": "#00b783",
+		// 		"navigationBarTextStyle": "white",
+		// 		"enablePullDownRefresh": false
+		// 	}
+		// }
+	],
+	"globalStyle": {
+		"navigationBarTextStyle": "black",
+		"navigationBarTitleText": "uni-app",
+		"navigationBarBackgroundColor": "#F8F8F8",
+		"backgroundColor": "#F8F8F8"
+	},
+	"uniIdRouter": {},
+	"tabBar": {
+		"color": "#999",
+		"selectedColor": "#00b783",
+		"borderStyle": "#fff",
+		"backgroundColor": "#ffffff",
+		"list": [{
+			"pagePath": "pages/tabBar/index/index",
+			"text": "home",
+			"iconPath": "static/index.png",
+			"selectedIconPath": "static/index1.png"
+		}, {
+			"pagePath": "pages/tabBar/search/search",
+			"text": "search",
+			"iconPath": "static/search.png",
+			"selectedIconPath": "static/search1.png"
+			
+		},{
+			"pagePath": "pages/tabBar/study/study",
+			"text": "study",
+			"iconPath": "static/study.png",
+			"selectedIconPath": "static/study1.png"
+		}
+		// {
+		// 	"pagePath": "pages/tabBar/mine/mine",
+		// 	"text": "我的",
+		// 	"iconPath": "static/mine.png",
+		// 	"selectedIconPath": "static/mine1.png"
+		// }
+		]
+	}
+}
+
