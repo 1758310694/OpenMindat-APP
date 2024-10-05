@@ -1,18 +1,48 @@
  import { generateCSVData } from '@/Formatter.js';
- 
+  
  export function downloadDataCSV(geomaterials, selectedFunction) {
 		 if(selectedFunction === 'contains' ||
 		   selectedFunction === 'notContains' || 
 		   selectedFunction === 'containAllButNot' || 
 		   selectedFunction === 'containOnlyElems'){
-	   const csvData = generateCSVData(geomaterials, selectedFunction);
-	   const link = document.createElement('a');
-	   link.setAttribute('href', csvData);
-	   link.setAttribute('download', 'geomaterials.csv');
-	   document.body.appendChild(link); // Required for FF
-	   link.click();
-	   document.body.removeChild(link);
-	 }
+	  const csvData = generateCSVData(geomaterials, selectedFunction);
+	  	  // 检查当前平台并处理不同的逻辑
+	  	  if (process.env.VUE_APP_PLATFORM === 'h5') {
+	  	    // H5端下载 CSV 文件
+	  	    const link = document.createElement('a');
+	  	    link.setAttribute('href', csvData); // 如果 csvData 是以 "data:text/csv;charset=utf-8," 开头的，确保这里正确处理
+	  	    link.setAttribute('download', 'element.csv');
+	  	    document.body.appendChild(link); // Required for FF
+	  	    link.click();
+	  	    document.body.removeChild(link);
+	  	  } 
+	  	  else {
+	  	     const csvData = generateCSVData(geomaterials, selectedFunction).replace(/^data:text\/csv;charset=utf-8,/, '');
+	  		 const fileName = 'element.csv';
+	  
+	      // 获取文件系统对象
+	      plus.io.requestFileSystem(plus.io.PRIVATE_DOC, function(fs) {
+	          // 创建文件
+	          fs.root.getFile(fileName, { create: true }, function(fileEntry) {
+	              // 创建写入流
+	              fileEntry.createWriter(function(writer) {
+	                  writer.write(csvData);
+	                  
+	                  // 保存成功后，使用uni.openDocument或plus.runtime.openFile打开文件
+	                  uni.showToast({
+	                      title: '文件已保存',
+	                      icon: 'success'
+	                  });
+	  
+	                  // 打开文件
+	                  plus.runtime.openFile(fileEntry.fullPath);
+	              }, function(e) {
+	                  console.log('文件写入失败: ' + e.message);
+	              });
+	          });
+	      });
+	  }
+	  }
 	 else if(selectedFunction === 'hardnessGT' || selectedFunction === 'hardnessLT' || selectedFunction ==='hardnessRange'){const csvData = generateCSVData(geomaterials, selectedFunction);
       const link = document.createElement('a');
       link.setAttribute('href', csvData);
@@ -125,15 +155,48 @@
 	  link.click();
 	  document.body.removeChild(link);
 	}
-	else if(selectedFunction === 'id'){const csvData = generateCSVData(geomaterials, selectedFunction);
-		  const link = document.createElement('a');
-		  link.setAttribute('href', csvData);
-		  link.setAttribute('download', 'id_materials.csv');
-		  document.body.appendChild(link); // Required for FF
-		  link.click();
-		  document.body.removeChild(link);
-		} 
+	else if (selectedFunction === 'id') {
+	  const csvData = generateCSVData(geomaterials, selectedFunction);
+	  // 检查当前平台并处理不同的逻辑
+	  if (process.env.VUE_APP_PLATFORM === 'h5') {
+	    // H5端下载 CSV 文件
+	    const link = document.createElement('a');
+	    link.setAttribute('href', csvData); // 如果 csvData 是以 "data:text/csv;charset=utf-8," 开头的，确保这里正确处理
+	    link.setAttribute('download', 'id.csv');
+	    document.body.appendChild(link); // Required for FF
+	    link.click();
+	    document.body.removeChild(link);
+	  } 
+	  else {
+	     const csvData = generateCSVData(geomaterials, selectedFunction).replace(/^data:text\/csv;charset=utf-8,/, '');
+		 const fileName = 'id.csv';
 
+    // 获取文件系统对象
+    plus.io.requestFileSystem(plus.io.PRIVATE_DOC, function(fs) {
+        // 创建文件
+        fs.root.getFile(fileName, { create: true }, function(fileEntry) {
+            // 创建写入流
+            fileEntry.createWriter(function(writer) {
+                writer.write(csvData);
+                
+                // 保存成功后，使用uni.openDocument或plus.runtime.openFile打开文件
+                uni.showToast({
+                    title: '文件已保存',
+                    icon: 'success'
+                });
+
+                // 打开文件
+                plus.runtime.openFile(fileEntry.fullPath);
+            }, function(e) {
+                console.log('文件写入失败: ' + e.message);
+            });
+        });
+    });
+}
+}
+	
+   
+	
 
 
 	else if(selectedFunction === 'varietyof'){const csvData = generateCSVData(geomaterials, selectedFunction);
