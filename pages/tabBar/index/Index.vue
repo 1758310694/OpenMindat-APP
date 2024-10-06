@@ -210,7 +210,7 @@ export default {
     goToSearch() {
       // 使用 switchTab 方法切换到底部标签栏页
       uni.switchTab({
-        url: '/pages/tabBar/search/search',
+        url: '/pages/tabBar/search/Search',
         success() {
           // 切换成功后可以在这里执行一些操作
         },
