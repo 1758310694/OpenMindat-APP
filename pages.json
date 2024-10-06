@@ -1,7 +1,7 @@
 {
 	"pages": [ //pages数组中第一项表示应用启动页，参考：https://uniapp.dcloud.io/collocation/pages
 		{
-			"path" : "pages/tabBar/index/index",
+			"path" : "pages/tabBar/index/Index",
 			"style" : 
 			{
 				"navigationBarTitleText" : "Mineral",
@@ -12,7 +12,7 @@
 			}
 		},
 		{
-			"path" : "pages/tabBar/search/search",
+			"path" : "pages/tabBar/search/Search",
 			"style" : 
 			{
 				"navigationBarTitleText" : "Search",
@@ -22,7 +22,7 @@
 			}
 		},
 		{
-			"path" : "pages/tabBar/study/study",
+			"path" : "pages/tabBar/study/Study",
 			"style" : 
 			{
 				"navigationBarTitleText" : "Study",
@@ -55,18 +55,18 @@
 		"borderStyle": "#fff",
 		"backgroundColor": "#ffffff",
 		"list": [{
-			"pagePath": "pages/tabBar/index/index",
+			"pagePath": "pages/tabBar/index/Index",
 			"text": "home",
 			"iconPath": "static/index.png",
 			"selectedIconPath": "static/index1.png"
 		}, {
-			"pagePath": "pages/tabBar/search/search",
+			"pagePath": "pages/tabBar/search/Search",
 			"text": "search",
 			"iconPath": "static/search.png",
 			"selectedIconPath": "static/search1.png"
 			
 		},{
-			"pagePath": "pages/tabBar/study/study",
+			"pagePath": "pages/tabBar/study/Study",
 			"text": "study",
 			"iconPath": "static/study.png",
 			"selectedIconPath": "static/study1.png"
