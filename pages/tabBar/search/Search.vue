@@ -57,8 +57,8 @@
           <h3>Select File Format</h3>
           <button class="format-button" @click="downloadCSV">CSV</button>
           <button class="format-button" @click="downloadTXT">TXT</button>
-          <button class="format-button" @click="downloadJSON-LD">JSON-LD</button>
-		  <button class="format-button" @click="downloadTTL">JSON</button>
+          <button class="format-button" @click="downloadJSONLD">JSON-LD</button>
+		  <button class="format-button" @click="downloadTTL">TTL</button>
 		  <button class="format-button" @click="downloadRDF">RDF</button>
           <button class="cancel-button" @click="closeModal">Cancel</button>
         </div>
@@ -267,7 +267,7 @@
 <script>
   import Button from '@/components/button/button.vue'
   import { generateCSVData } from '@/Formatter.js';
-  import { downloadDataCSV,downloadDataTXT } from '@/Export.js';
+  import { downloadDataCSV,downloadDataTXT,downloadDataTTL, downloadDataJSONLD, downloadDataRDF } from '@/Export.js';
   export default {data() {
       return {
     
@@ -1765,8 +1765,15 @@
 	downloadTXT(){
 		downloadDataTXT(this.geomaterials,this.selectedFunction);
 	},
-
-	
+	downloadTTL(){
+		downloadDataTTL(this.geomaterials,this.selectedFunction);
+	},
+	downloadJSONLD(){
+		downloadDataJSONLD(this.geomaterials,this.selectedFunction);
+	},
+	downloadRDF(){
+		downloadDataRDF(this.geomaterials,this.selectedFunction);
+	},
       mounted() {
 		  
         // this.loadImages(); // 如果没有其他图片加载需求，可以注释掉这行
