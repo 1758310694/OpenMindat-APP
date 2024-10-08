@@ -36,4 +36,9 @@ git clone https://github.com/1758310694/OpenMindat-APP.git
 
 1、token获取步骤：https://www.mindat.org/a/how_to_get_my_mindat_api_key
 
-2、
+2、源码中token替换：`/pages``/tabBar``search``Search.vue`中
+```coffee
+header: {
+            'Authorization': 'Token ******************'
+          }
+```
