@@ -45,7 +45,16 @@ header: {
 
 **App使用说明**
 
-1、<img src="/static/image2/use.png" width="25%">
+1、在功能选择器中下拉选择检索功能
+
+2、在文本输入框中根据默认占位符提示输入查询参数值，详情可见API文档https://api.mindat.org/schema/redoc/
+
+3、点击Search按钮进行查询操作;
+
+4、点击Download按钮后选择目标格式后进行下载。
+
+
+<img src="/static/image2/use.png" width="25%">
 <img src="/static/image2/use1.png" width="25%">
 
 
