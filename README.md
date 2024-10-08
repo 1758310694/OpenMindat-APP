@@ -45,7 +45,9 @@ header: {
 
 **App使用说明**
 
-1、
+1、<img src="/static/image2/use.png" width="25%">
+<img src="/static/image2/use1.png" width="25%">
+
 
 
 
