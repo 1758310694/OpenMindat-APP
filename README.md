@@ -54,7 +54,7 @@ header: {
 4、点击Download按钮后选择目标格式后进行下载。
 
 
-<img src="/static/image2/use.png" width="25%"><img src="/static/image2/use1.png" width="25%">
+<img src="/static/image2/use.png" width="25%"> <img src="/static/image2/use1.png" width="25%">
 
 
 
