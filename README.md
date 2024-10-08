@@ -22,3 +22,7 @@ HBuilderX是通用的前端开发工具，但为uni-app做了特别强化。HBui
 git clone https://github.com/1758310694/OpenMindat-APP.git
 ```
 
+**运行**
+
+1、将源码加载至HBuilderX工具中(可直接将文件拉入)
+2、在HBuilderX选择`运行`-->`运行到浏览器`即可在浏览器使用
