@@ -8,4 +8,9 @@
 
 **编译软件下载**
 
-HBuilderX是通用的前端开发工具，但为uni-app做了特别强化。工具获取地址：https://www.dcloud.io/hbuilderx.html
+HBuilderX是通用的前端开发工具，但为uni-app做了特别强化。HBuilderX内置相关环境，开箱即用，无需配置nodejs。工具获取地址：https://www.dcloud.io/hbuilderx.html
+
+**代码获取**
+
+代码获取有以下两种方式：
+1.
