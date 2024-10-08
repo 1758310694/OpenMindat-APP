@@ -13,4 +13,11 @@ HBuilderX是通用的前端开发工具，但为uni-app做了特别强化。HBui
 **代码获取**
 
 代码获取有以下两种方式：
-1.
+
+1.直接下载源码ZIP文件
+
+2.使用Git克隆仓库
+
+```coffee
+[git clone](https://github.com/1758310694/OpenMindat-APP.git)
+```
