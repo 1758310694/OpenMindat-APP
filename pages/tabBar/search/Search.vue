@@ -25,7 +25,9 @@
 		<input v-if="selectedFunction === 'id'" class="element-input" type="text" step="any" v-model="id" placeholder="Enter given id" />
 		<input v-if="selectedFunction === 'varietyof'" class="element-input" type="text" step="any" v-model="varietyof" placeholder="Enter given varietyof" />
 		<input v-if="selectedFunction === 'entrytype'" class="element-input" type="text" step="any" v-model="entrytype" placeholder="Enter given entrytype" />
+		<input v-if="selectedFunction === 'imastatus'" class="element-input" type="text" step="any" v-model="imastatus" placeholder="Enter given imastatus" />
 		<input v-if="selectedFunction === 'retrievedbycombined'" class="element-input" type="text" step="any" v-model="elementInput" placeholder="Enter given element(comma separated)" />
+		<input v-if="selectedFunction === 'retrievedbycombined'" class="element-input" type="text" v-model="excludeElementInput" placeholder="Enter elements to exclude (comma separated)" />
 		<input v-if="selectedFunction === 'retrievedbycombined'" class="element-input" type="text" step="any" v-model="minHardness" placeholder="Enter given hardness_min" />
 		<input v-if="selectedFunction === 'retrievedbycombined'" class="element-input" type="text" step="any" v-model="maxHardness" placeholder="Enter given hardness_max" />
 		<input v-if="selectedFunction === 'retrievedbycombined'" class="element-input" type="text" step="any" v-model="csystem" placeholder="Enter given crystal_system" />
@@ -50,6 +52,7 @@
     <!-- 搜索按钮 -->
     <view class="search-button">
       <button @click="executeFunction">Search</button>
+	  <button @click="resetPageToInitialState">Reset</button>
       <button @click="openModal">Download</button> <!-- 下载按钮 -->
     
       <div v-if="showModal" class="modal">
@@ -185,10 +188,17 @@
 			  	<p><strong>Cleavage:</strong> {{ material.cleavage }}</p>
 			  	<p><strong>Cleavagetype:</strong> {{ material.cleavagetype }}</p>
 			  </template>
-			  <template v-if="selectedFunction === 'name' || selectedFunction === 'q' || selectedFunction === 'id' ">
+			  <template v-if="selectedFunction === 'name'">
 				<p><strong>Id:</strong> {{ material.id }}</p>
 				<p><strong>Name:</strong> {{ material.name }}</p>
+				<p><strong>elements:</strong> {{ material.elements }}</p>
+				<p><strong>mindat_formula:</strong> {{ material.mindat_formula }}</p>
+				<p><strong>Ima_status:</strong> {{ material.ima_status }}</p>
 			  </template>
+			  <template v-if="selectedFunction === 'q' || selectedFunction === 'id' ">
+				  <p><strong>Id:</strong> {{ material.id }}</p>
+				  <p><strong>Name:</strong> {{ material.name }}</p>
+				</template>
 			  <template v-if="selectedFunction === 'varietyof'">
 			  	<p><strong>Id:</strong> {{ material.id }}</p>
 			  	<p><strong>Name:</strong> {{ material.name }}</p>
@@ -198,6 +208,13 @@
 			  	<p><strong>Id:</strong> {{ material.id }}</p>
 			  	<p><strong>Name:</strong> {{ material.name }}</p>
 			  	<p><strong>Entrytype:</strong> {{ material.entrytype }}</p>
+			  </template>
+			  <template v-if="selectedFunction === 'imastatus'">
+				<p><strong>Id:</strong> {{ material.id }}</p>
+			  	<p><strong>Name:</strong> {{ material.name }}</p>
+			  	<p><strong>Elements:</strong> {{ material.elements }}</p>
+				<p><strong>Ima_formula:</strong> {{ material.ima_formula }}</p>
+				<p><strong>Ima_status:</strong> {{ material.ima_status }}</p>
 			  </template>
 			  <template v-if="selectedFunction === 'retrievedbycombined'">
 			  	<p><strong>Id:</strong> {{ material.id }}</p>
@@ -301,6 +318,7 @@
 		  { label: 'mindat_geomaterial', value: 'id' },
 		  { label: 'geomaterials_varietyof', value: 'varietyof' },
 		  { label: 'geomaterials_entrytype', value: 'entrytype' },
+		  { label: 'geomaterials_imastatus', value: 'imastatus' },
 		  { label: 'geomaterial_retrieved_by_combined_conditions', value: 'retrievedbycombined' },
 		  { label: 'localities_country', value: 'countrylist'},
 		  { label: 'localities_retrieve_id', value: 'localitiesid'},
@@ -328,6 +346,7 @@
 		opticalsign:null,
 		polytypeof:null,
 		cleavagetype:null,
+		imastatus:null,
 		name:null,
 		q:null,
 		id:null,
@@ -341,7 +360,7 @@
 		localitiesExcludeElementInput:null,
 		ageid:null,
 		imaid:null,
-		
+		cancelRequest: false, // 用于控制是否取消请求
       }
     },
     computed: {
@@ -358,6 +377,40 @@
       }
     },
     methods: {
+		resetPageToInitialState() {
+		      this.geomaterials = []; // 清空查询结果
+			  this.elementInput ='';// 用户输入的元素
+			  this.excludeElementInput= ''; // 用户输入的不包含的元素
+			  this.minHardness=null;
+			  this.maxHardness=null;
+			  this.mindensity=null;
+			  this.maxdensity=null;
+			  this.minoptical2v=null;
+			  this.maxoptical2v=null;
+			  this.csystem=null;
+			  this.fracturetype=null;
+			  this.colour=null;
+			  this.streak=null;
+			  this.diapheny=null;
+			  this.lustretype=null;
+			  this.opticalsign=null;
+			  this.polytypeof=null;
+			  this.cleavagetype=null;
+			  this.name=null;
+			  this.q=null;
+			  this.id=null;
+			  this.varietyof=null;
+			  this.entrytype=null;
+			  this.imastatus=null;
+			  this.country=null;
+			  this.localitiesid=null;
+			  this.description=null;
+			  this.localitiesElementsInput=null;
+			  this.localitiesExcludeElementInput=null;
+			  this.ageid=null;
+			  this.imaid=null;
+			  this.cancelRequest = true;
+		    },
 		openModal() {
 		  this.showModal = true; // 打开模态框
 		},
@@ -444,6 +497,9 @@
 			else if(this.selectedFunction === 'entrytype') {
 			this.fetchEntrytype();
 			}
+			else if(this.selectedFunction === 'imastatus') {
+			this.fetchImastatus();
+			}
 			else if(this.selectedFunction === 'retrievedbycombined') {
 			this.fetchCombined();
 			}
@@ -480,6 +536,7 @@
         const elements = this.elementInput.split(',').map(el => el.trim()); // 解析用户输入的元素
         this.geomaterials = []; // 清空之前的数据
         this.fetchGeomaterialsPage('https://api.mindat.org/geomaterials/', elements);
+		this.cancelRequest = false; // 重置取消标志为 false
       },
       fetchGeomaterialsPage(url, elements) {
         uni.request({
@@ -492,6 +549,10 @@
             elements_inc: elements.join(',')
           },
           success: (res) => {
+			if (this.cancelRequest) {
+			          console.log('Request canceled after receiving response.');
+			          return; // 如果取消标志为 true，直接返回
+			        }  
             console.log('Fetched page:', res.data);
             const results = res.data.results;
             // 将当前页的结果添加到 geomaterials 中，并确保包含所需的属性
@@ -517,6 +578,7 @@
         const elements = this.elementInput.split(',').map(el => el.trim()); // 解析用户输入的元素
         this.geomaterials = []; // 清空之前的数据
         this.fetchGeomaterialsNotContainPage('https://api.mindat.org/geomaterials/', elements);
+		this.cancelRequest = false; // 重置取消标志为 false
       },
       fetchGeomaterialsNotContainPage(url, elements) {
         uni.request({
@@ -529,6 +591,10 @@
             elements_exc: elements.join(',')
           },
           success: (res) => {
+			if (this.cancelRequest) {
+			          console.log('Request canceled after receiving response.');
+			          return; // 如果取消标志为 true，直接返回
+			        }
             console.log('Fetched page (not contain):', res.data);
             const results = res.data.results;
             // 将当前页的结果添加到 geomaterials 中，并确保包含所需的属性
@@ -555,6 +621,7 @@
 	      const excludeElements = this.excludeElementInput.split(',').map(el => el.trim());
 	      this.geomaterials = [];
 	      this.fetchGeomaterialsContainAllButNotPage('https://api.mindat.org/geomaterials/', includeElements, excludeElements);
+		  this.cancelRequest = false; // 重置取消标志为 false
 	    },
 	fetchGeomaterialsContainAllButNotPage(url, includeElements, excludeElements) {
 	      uni.request({
@@ -568,6 +635,10 @@
 	          elements_exc: excludeElements.join(',')
 	        },
 	        success: (res) => {
+			  if (this.cancelRequest) {
+			            console.log('Request canceled after receiving response.');
+			            return; // 如果取消标志为 true，直接返回
+			          }
 			  console.log('Fetched page(contain all but not):',res.data);
 	          const results = res.data.results;
 	          results.forEach(material => {
@@ -590,6 +661,7 @@
 		fetchMaterials() {
 		  this.geomaterials = [];
 		  this.fetchMaterialsPage('https://api.mindat.org/geomaterials/')
+		  this.cancelRequest = false; // 重置取消标志为 false
 		},
 		fetchMaterialsPage(url) {
 		  uni.request({
@@ -602,6 +674,10 @@
 		      hardness_min: this.minHardness
 		    },
 		    success: (res) => {
+			  if (this.cancelRequest) {
+			            console.log('Request canceled after receiving response.');
+			            return; // 如果取消标志为 true，直接返回
+			          }
 		      console.log('Fetched page (hardnessGT):', res.data);
 		      const results = res.data.results;
 		      results.forEach(material => {
@@ -623,6 +699,7 @@
 		fetchMaterialsLt() {
 		  this.geomaterials = [];
 		  this.fetchMaterialsLTPage('https://api.mindat.org/geomaterials/')
+		  this.cancelRequest = false; // 重置取消标志为 false
 		},
 		fetchMaterialsLTPage(url) {
 		  uni.request({
@@ -635,6 +712,10 @@
 		      hardness_max: this.maxHardness
 		    },
 		    success: (res) => {
+			  if (this.cancelRequest) {
+			            console.log('Request canceled after receiving response.');
+			            return; // 如果取消标志为 true，直接返回
+			          }
 		      console.log('Fetched page (hardnessLT):', res.data);
 		      const results = res.data.results;
 		      results.forEach(material => {
@@ -656,6 +737,7 @@
 		fetchMaterialsRange(){
 			this.geomaterials = [];
 			this.fetchMaterialsRangePage('https://api.mindat.org/geomaterials/')
+			this.cancelRequest = false; // 重置取消标志为 false
 		},
 		fetchMaterialsRangePage(url) {
 		  uni.request({
@@ -669,6 +751,10 @@
 		      hardness_max: this.maxHardness
 		    },
 		    success: (res) => {
+			  if (this.cancelRequest) {
+			            console.log('Request canceled after receiving response.');
+			            return; // 如果取消标志为 true，直接返回
+			          }
 		      console.log('Fetched page (hardnessRange):', res.data);
 		      const results = res.data.results;
 		      results.forEach(material => {
@@ -696,6 +782,7 @@
 	  const excludeElements = all_minerals.filter(el => !elements.includes(el));
 	  this.geomaterials = []; // 清空之前的数据
 	  this.fetchGeomaterialsContainOnlyElemsPage('https://api.mindat.org/geomaterials/', elements, excludeElements);
+	  this.cancelRequest = false; // 重置取消标志为 false
 	  },
 	  fetchGeomaterialsContainOnlyElemsPage(url, elements, excludeElements) {
 	  uni.request({
@@ -709,6 +796,10 @@
 	      elements_exc: excludeElements.join(',')
 	    },
 	    success: (res) => {
+		  if (this.cancelRequest) {
+		            console.log('Request canceled after receiving response.');
+		            return; // 如果取消标志为 true，直接返回
+		          }
 	      console.log('Fetched page (contain only elems):', res.data);
 	      const results = res.data.results;
 	      results.forEach(material => {
@@ -730,6 +821,7 @@
 	fetchDensGT() {
 	  this.geomaterials = [];
 	  this.fetchDensGTPage('https://api.mindat.org/geomaterials/')
+	  this.cancelRequest = false; // 重置取消标志为 false
 	},
 	fetchDensGTPage(url) {
 	  uni.request({
@@ -742,6 +834,10 @@
 	      density_min: this.mindensity
 	    },
 	    success: (res) => {
+		  if (this.cancelRequest) {
+		            console.log('Request canceled after receiving response.');
+		            return; // 如果取消标志为 true，直接返回
+		          }
 	      console.log('Fetched page (densGT):', res.data);
 	      const results = res.data.results;
 	      results.forEach(material => {
@@ -763,6 +859,7 @@
 	fetchDensLT() {
 	  this.geomaterials = [];
 	  this.fetchDensLTPage('https://api.mindat.org/geomaterials/')
+	  this.cancelRequest = false; // 重置取消标志为 false
 	},
 	fetchDensLTPage(url) {
 	  uni.request({
@@ -775,6 +872,10 @@
 	      density_max: this.maxdensity
 	    },
 	    success: (res) => {
+		  if (this.cancelRequest) {
+		            console.log('Request canceled after receiving response.');
+		            return; // 如果取消标志为 true，直接返回
+		          }
 	      console.log('Fetched page (densLT):', res.data);
 	      const results = res.data.results;
 	      results.forEach(material => {
@@ -796,6 +897,7 @@
 	fetchDensRange(){
 		this.geomaterials = [];
 		this.fetchDensRangePage('https://api.mindat.org/geomaterials/')
+		this.cancelRequest = false; // 重置取消标志为 false
 	},
 	fetchDensRangePage(url) {
 	  uni.request({
@@ -809,6 +911,10 @@
 	      density_max: this.maxdensity
 	    },
 	    success: (res) => {
+		  if (this.cancelRequest) {
+		            console.log('Request canceled after receiving response.');
+		            return; // 如果取消标志为 true，直接返回
+		          }
 	      console.log('Fetched page (densityRange):', res.data);
 	      const results = res.data.results;
 	      results.forEach(material => {
@@ -830,6 +936,7 @@
 	fetchoptical2vRange(){
 		this.geomaterials = [];
 		this.fetchoptical2vRangePage('https://api.mindat.org/geomaterials/')
+		this.cancelRequest = false; // 重置取消标志为 false
 	},
 	fetchoptical2vRangePage(url) {
 	  uni.request({
@@ -843,6 +950,10 @@
 	      optical2v_max: this.maxoptical2v
 	    },
 	    success: (res) => {
+		  if (this.cancelRequest) {
+		            console.log('Request canceled after receiving response.');
+		            return; // 如果取消标志为 true，直接返回
+		          }
 	      console.log('Fetched page (optical2vRange):', res.data);
 	      const results = res.data.results;
 	      results.forEach(material => {
@@ -864,6 +975,7 @@
 	fetchCsystem() {
 	  this.geomaterials = [];
 	  this.fetchCsystemPage('https://api.mindat.org/geomaterials/')
+	  this.cancelRequest = false; // 重置取消标志为 false
 	},
 	fetchCsystemPage(url) {
 	  uni.request({
@@ -876,6 +988,10 @@
 	      crystal_system: this.csystem
 	    },
 	    success: (res) => {
+		  if (this.cancelRequest) {
+		            console.log('Request canceled after receiving response.');
+		            return; // 如果取消标志为 true，直接返回
+		          }
 	      console.log('Fetched page (csystem):', res.data);
 	      const results = res.data.results;
 	      results.forEach(material => {
@@ -898,6 +1014,7 @@
 	fetchFracturetype() {
 	  this.geomaterials = [];
 	  this.fetchFracturetypePage('https://api.mindat.org/geomaterials/')
+	  this.cancelRequest = false; // 重置取消标志为 false
 	},
 	fetchFracturetypePage(url) {
 	  uni.request({
@@ -910,6 +1027,10 @@
 	      fracturetype: this.fracturetype
 	    },
 	    success: (res) => {
+		  if (this.cancelRequest) {
+		            console.log('Request canceled after receiving response.');
+		            return; // 如果取消标志为 true，直接返回
+		          }
 	      console.log('Fetched page (fracturetype):', res.data);
 	      const results = res.data.results;
 	      results.forEach(material => {
@@ -933,6 +1054,7 @@
 	fetchColour() {
 	  this.geomaterials = [];
 	  this.fetchColourPage('https://api.mindat.org/geomaterials/')
+	  this.cancelRequest = false; // 重置取消标志为 false
 	},
 	fetchColourPage(url) {
 	  uni.request({
@@ -945,6 +1067,10 @@
 	      colour: this.colour
 	    },
 	    success: (res) => {
+		  if (this.cancelRequest) {
+		            console.log('Request canceled after receiving response.');
+		            return; // 如果取消标志为 true，直接返回
+		          }
 	      console.log('Fetched page (colour):', res.data);
 	      const results = res.data.results;
 	      results.forEach(material => {
@@ -967,6 +1093,7 @@
 	fetchStreak() {
 	  this.geomaterials = [];
 	  this.fetchStreakPage('https://api.mindat.org/geomaterials/')
+	  this.cancelRequest = false; // 重置取消标志为 false
 	},
 	fetchStreakPage(url) {
 	  uni.request({
@@ -979,6 +1106,10 @@
 	      streak: this.streak
 	    },
 	    success: (res) => {
+		  if (this.cancelRequest) {
+		            console.log('Request canceled after receiving response.');
+		            return; // 如果取消标志为 true，直接返回
+		          }
 	      console.log('Fetched page (streak):', res.data);
 	      const results = res.data.results;
 	      results.forEach(material => {
@@ -1002,6 +1133,7 @@
 	fetchDiapheny() {
 	  this.geomaterials = [];
 	  this.fetchDiaphenyPage('https://api.mindat.org/geomaterials/')
+	  this.cancelRequest = false; // 重置取消标志为 false
 	},
 	fetchDiaphenyPage(url) {
 	  uni.request({
@@ -1014,6 +1146,10 @@
 	      diapheny: this.diapheny
 	    },
 	    success: (res) => {
+		  if (this.cancelRequest) {
+		            console.log('Request canceled after receiving response.');
+		            return; // 如果取消标志为 true，直接返回
+		          }
 	      console.log('Fetched page (diapheny):', res.data);
 	      const results = res.data.results;
 	      results.forEach(material => {
@@ -1037,6 +1173,7 @@
 	fetchLustretype() {
 	  this.geomaterials = [];
 	  this.fetchLustretypePage('https://api.mindat.org/geomaterials/')
+	  this.cancelRequest = false; // 重置取消标志为 false
 	},
 	fetchLustretypePage(url) {
 	  uni.request({
@@ -1049,6 +1186,10 @@
 	      lustretype: this.lustretype
 	    },
 	    success: (res) => {
+		  if (this.cancelRequest) {
+		            console.log('Request canceled after receiving response.');
+		            return; // 如果取消标志为 true，直接返回
+		          }
 	      console.log('Fetched page (lustretype):', res.data);
 	      const results = res.data.results;
 	      results.forEach(material => {
@@ -1072,6 +1213,7 @@
 	fetchOpticalsign() {
 	  this.geomaterials = [];
 	  this.fetchOpticalsignPage('https://api.mindat.org/geomaterials/')
+	  this.cancelRequest = false; // 重置取消标志为 false
 	},
 	fetchOpticalsignPage(url) {
 	  uni.request({
@@ -1084,6 +1226,10 @@
 	      opticalsign: this.opticalsign
 	    },
 	    success: (res) => {
+		  if (this.cancelRequest) {
+		            console.log('Request canceled after receiving response.');
+		            return; // 如果取消标志为 true，直接返回
+		          }
 	      console.log('Fetched page (opticalsign):', res.data);
 	      const results = res.data.results;
 	      results.forEach(material => {
@@ -1107,6 +1253,7 @@
 	fetchPolytypeof() {
 	  this.geomaterials = [];
 	  this.fetchPolytypeofPage('https://api.mindat.org/geomaterials/')
+	  this.cancelRequest = false; // 重置取消标志为 false
 	},
 	fetchPolytypeofPage(url) {
 	  uni.request({
@@ -1119,6 +1266,10 @@
 	      polytypeof: this.polytypeof
 	    },
 	    success: (res) => {
+		  if (this.cancelRequest) {
+		            console.log('Request canceled after receiving response.');
+		            return; // 如果取消标志为 true，直接返回
+		          }
 	      console.log('Fetched page (polytypeof):', res.data);
 	      const results = res.data.results;
 	      results.forEach(material => {
@@ -1142,6 +1293,7 @@
 	fetchCleavagetype() {
 	  this.geomaterials = [];
 	  this.fetchCleavagetypePage('https://api.mindat.org/geomaterials/')
+	  this.cancelRequest = false; // 重置取消标志为 false
 	},
 	fetchCleavagetypePage(url) {
 	  uni.request({
@@ -1154,6 +1306,10 @@
 	      cleavagetype: this.cleavagetype
 	    },
 	    success: (res) => {
+		  if (this.cancelRequest) {
+		            console.log('Request canceled after receiving response.');
+		            return; // 如果取消标志为 true，直接返回
+		          }
 	      console.log('Fetched page (cleavagetype):', res.data);
 	      const results = res.data.results;
 	      results.forEach(material => {
@@ -1177,6 +1333,7 @@
 	fetchName() {
 	  this.geomaterials = [];
 	  this.fetchNamePage('https://api.mindat.org/geomaterials/')
+	  this.cancelRequest = false; // 重置取消标志为 false
 	},
 	fetchNamePage(url) {
 	  uni.request({
@@ -1189,13 +1346,19 @@
 	      name: this.name
 	    },
 	    success: (res) => {
+		  if (this.cancelRequest) {
+		            console.log('Request canceled after receiving response.');
+		            return; // 如果取消标志为 true，直接返回
+		          }
 	      console.log('Fetched page (name):', res.data);
 	      const results = res.data.results;
 	      results.forEach(material => {
 	        this.geomaterials.push({
 			  id: material.id,
 	          name: material.name,
-	          
+	          elements:material.elements,
+			  mindat_formula:material.mindat_formula,
+			  ima_status:material.ima_status
 	        });
 	      });
 	      if (res.data.next) {
@@ -1210,6 +1373,7 @@
 	fetchSearchName() {
 	  this.geomaterials = [];
 	  this.fetchSearchNamePage('https://api.mindat.org/geomaterials/')
+	  this.cancelRequest = false; // 重置取消标志为 false
 	},
 	fetchSearchNamePage(url) {
 	  uni.request({
@@ -1222,6 +1386,10 @@
 	      q: this.q
 	    },
 	    success: (res) => {
+		  if (this.cancelRequest) {
+		            console.log('Request canceled after receiving response.');
+		            return; // 如果取消标志为 true，直接返回
+		          }
 	      console.log('Fetched page (searchname):', res.data);
 	      const results = res.data.results;
 	      results.forEach(material => {
@@ -1276,6 +1444,7 @@
 	fetchVarietyof() {
 	  this.geomaterials = [];
 	  this.fetchVarietyofPage('https://api.mindat.org/geomaterials/')
+	  this.cancelRequest = false; // 重置取消标志为 false
 	},
 	fetchVarietyofPage(url) {
 	  uni.request({
@@ -1288,6 +1457,10 @@
 	      varietyof: this.varietyof
 	    },
 	    success: (res) => {
+		  if (this.cancelRequest) {
+		            console.log('Request canceled after receiving response.');
+		            return; // 如果取消标志为 true，直接返回
+		          }
 	      console.log('Fetched page (varietyof):', res.data);
 	      const results = res.data.results;
 	      results.forEach(material => {
@@ -1310,6 +1483,7 @@
 	fetchEntrytype() {
 	  this.geomaterials = [];
 	  this.fetchEntrytypePage('https://api.mindat.org/geomaterials/')
+	  this.cancelRequest = false; // 重置取消标志为 false
 	},
 	fetchEntrytypePage(url) {
 	  uni.request({
@@ -1322,6 +1496,10 @@
 	      entrytype: this.entrytype
 	    },
 	    success: (res) => {
+		  if (this.cancelRequest) {
+		            console.log('Request canceled after receiving response.');
+		            return; // 如果取消标志为 true，直接返回
+		          }
 	      console.log('Fetched page (entrytype):', res.data);
 	      const results = res.data.results;
 	      results.forEach(material => {
@@ -1341,12 +1519,12 @@
 	    }
 	  });
 	},
-	fetchCombined() {
-	  const elements = this.elementInput.split(',').map(el => el.trim()); // 解析用户输入的元素
-	  this.geomaterials = []; // 清空之前的数据
-	  this.fetchCombinedPage('https://api.mindat.org/geomaterials/', elements);
+	fetchImastatus() {
+	  this.geomaterials = [];
+	  this.fetchImastatusPage('https://api.mindat.org/geomaterials/')
+	  this.cancelRequest = false; // 重置取消标志为 false
 	},
-	fetchCombinedPage(url, elements) {
+	fetchImastatusPage(url) {
 	  uni.request({
 	    url: url,
 	    method: 'GET',
@@ -1354,27 +1532,90 @@
 	      'Authorization': 'Token 99ef26e16c7d6eca9941af072bf5532f'
 	    },
 	    data: {
-	      elements_inc: elements.join(','),
-		  hardness_min:this.minHardness,
-		  hardness_max:this.maxHardness,
-		  crystal_system:this.csystem,
-		  ima_status:this.imastatus,
-		  entrytype:this.entrytype
+	      ima_status: this.imastatus
 	    },
 	    success: (res) => {
+		  if (this.cancelRequest) {
+		            console.log('Request canceled after receiving response.');
+		            return; // 如果取消标志为 true，直接返回
+		          }
+	      console.log('Fetched page (imastatus):', res.data);
+	      const results = res.data.results;
+	      results.forEach(material => {
+	        this.geomaterials.push({
+			  id: material.id,
+			  name: material.name,
+	          elements: material.elements,
+			  ima_formula:material.ima_formula,
+			  ima_status:material.ima_status,
+	        });
+	      });
+	      if (res.data.next) {
+	        this.fetchImastatusPage(res.data.next);
+	      }
+	    },
+	    fail: (err) => {
+	      console.error('Error fetching materials (imastatus):', err);
+	    }
+	  });
+	},
+	fetchCombined() {
+	  const elements = this.elementInput.split(',').map(el => el.trim()); // 解析用户输入的元素
+	  this.geomaterials = []; // 清空之前的数据
+	  this.fetchCombinedPage('https://api.mindat.org/geomaterials/', elements);
+	  this.cancelRequest = false; // 重置取消标志为 false
+	},
+	
+	fetchCombinedPage(url, elements) {
+	  // 动态构建请求的参数对象
+	  const params = {
+	    elements_inc: elements.join(','),
+	  };
+	if(this.excludeElementInput){
+		params.elements_exc = this.excludeElementInput;
+	}
+	  // 只在有值时添加查询条件
+	  if (this.minHardness) {
+	    params.hardness_min = this.minHardness;
+	  }
+	  if (this.maxHardness) {
+	    params.hardness_max = this.maxHardness;
+	  }
+	  if (this.csystem) {
+	    params.crystal_system = this.csystem;
+	  }
+	  if (this.imastatus) {
+	    params.ima_status = this.imastatus;
+	  }
+	  if (this.entrytype) {
+	    params.entrytype = this.entrytype;
+	  }
+	
+	  uni.request({
+	    url: url,
+	    method: 'GET',
+	    header: {
+	      'Authorization': 'Token 99ef26e16c7d6eca9941af072bf5532f'
+	    },
+	    data: params, // 使用动态构建的参数
+	    success: (res) => {
+		  if (this.cancelRequest) {
+		            console.log('Request canceled after receiving response.');
+		            return; // 如果取消标志为 true，直接返回
+		          }
 	      console.log('Fetched page (combine):', res.data);
 	      const results = res.data.results;
 	      // 将当前页的结果添加到 geomaterials 中，并确保包含所需的属性
 	      results.forEach(material => {
 	        this.geomaterials.push({
-			  id:material.id,	
+	          id: material.id,
 	          name: material.name,
 	          elements: material.elements,
-			  hmin:material.hmin,
-			  hmax:material.hmax,
-			  csystem:material.csystem,
-			  ima_status:material.ima_status,
-			  entrytype:material.entrytype,
+	          hmin: material.hmin,
+	          hmax: material.hmax,
+	          csystem: material.csystem,
+	          ima_status: material.ima_status,
+	          entrytype: material.entrytype,
 	        });
 	      });
 	
@@ -1391,6 +1632,7 @@
 	fetchCountrylist() {
 	  this.geomaterials = [];
 	  this.fetchCountrylistPage("https://api.mindat.org/localities/")
+	  this.cancelRequest = false; // 重置取消标志为 false
 	},
 	fetchCountrylistPage(url) {
 	  uni.request({
@@ -1403,6 +1645,10 @@
 	      country: this.country
 	    },
 	    success: (res) => {
+		  if (this.cancelRequest) {
+		            console.log('Request canceled after receiving response.');
+		            return; // 如果取消标志为 true，直接返回
+		          }
 	      console.log('Fetched page (countrylist):', res.data);
 	      const results = res.data.results;
 	      results.forEach(material => {
@@ -1438,6 +1684,10 @@
 	      id: this.localitiesid
 	    },
 	    success: (res) => {
+		  if (this.cancelRequest) {
+		            console.log('Request canceled after receiving response.');
+		            return; // 如果取消标志为 true，直接返回
+		          }
 	      console.log('Fetched page (id):', res.data);
 	      const material = res.data;
 	      // results.forEach(material => {
@@ -1463,6 +1713,7 @@
 	fetchDescription() {
 	  this.geomaterials = [];
 	  this.fetchDescriptionPage("https://api.mindat.org/localities/")
+	  this.cancelRequest = false; // 重置取消标志为 false
 	},
 	fetchDescriptionPage(url) {
 	  uni.request({
@@ -1475,6 +1726,10 @@
 	      description: this.description
 	    },
 	    success: (res) => {
+		  if (this.cancelRequest) {
+		            console.log('Request canceled after receiving response.');
+		            return; // 如果取消标志为 true，直接返回
+		          }
 	      console.log('Fetched page (description):', res.data);
 	      const results = res.data.results;
 	      results.forEach(material => {
@@ -1502,6 +1757,7 @@
 	  const elements = this.localitiesElementsInput.split(',').map(el => el.trim()); // 解析用户输入的元素
 	  this.geomaterials = []; // 清空之前的数据
 	  this.fetchLocalitiesElementsIncPage('https://api.mindat.org/localities/', elements);
+	  this.cancelRequest = false; // 重置取消标志为 false
 	},
 	fetchLocalitiesElementsIncPage(url, elements) {
 	  uni.request({
@@ -1514,6 +1770,10 @@
 	      elements_inc: elements.join(',')
 	    },
 	    success: (res) => {
+		  if (this.cancelRequest) {
+		            console.log('Request canceled after receiving response.');
+		            return; // 如果取消标志为 true，直接返回
+		          }
 	      console.log('Fetched page (localitiesElementsInc):', res.data);
 	      const results = res.data.results;
 	      // 将当前页的结果添加到 geomaterials 中，并确保包含所需的属性
@@ -1542,6 +1802,7 @@
 	  const elements = this.localitiesElementsInput.split(',').map(el => el.trim()); // 解析用户输入的元素
 	  this.geomaterials = []; // 清空之前的数据
 	  this.fetchLocalitiesElementsExcPage('https://api.mindat.org/localities/', elements);
+	  this.cancelRequest = false; // 重置取消标志为 false
 	},
 	fetchLocalitiesElementsExcPage(url, elements) {
 	  uni.request({
@@ -1554,6 +1815,10 @@
 	      elements_exc: elements.join(',')
 	    },
 	    success: (res) => {
+		  if (this.cancelRequest) {
+		            console.log('Request canceled after receiving response.');
+		            return; // 如果取消标志为 true，直接返回
+		          }
 	      console.log('Fetched page (localitiesElementsExc):', res.data);
 	      const results = res.data.results;
 	      // 将当前页的结果添加到 geomaterials 中，并确保包含所需的属性
@@ -1583,6 +1848,7 @@
 	      const excludeElements = this.localitiesExcludeElementInput.split(',').map(el => el.trim());
 	      this.geomaterials = [];
 	      this.fetchLocalitiesElementsIncExcPage('https://api.mindat.org/localities/', includeElements, excludeElements);
+		  this.cancelRequest = false; // 重置取消标志为 false
 	    },
 	fetchLocalitiesElementsIncExcPage(url, includeElements, excludeElements) {
 	      uni.request({
@@ -1596,6 +1862,10 @@
 	          elements_exc: excludeElements.join(',')
 	        },
 	        success: (res) => {
+			  if (this.cancelRequest) {
+			            console.log('Request canceled after receiving response.');
+			            return; // 如果取消标志为 true，直接返回
+			          }
 			  console.log('Fetched page(localitiesElementsIncExc):',res.data);
 	          const results = res.data.results;
 	          results.forEach(material => {
@@ -1630,6 +1900,10 @@
 	      age_id: this.ageid
 	    },
 	    success: (res) => {
+		  if (this.cancelRequest) {
+		            console.log('Request canceled after receiving response.');
+		            return; // 如果取消标志为 true，直接返回
+		          }
 	      console.log('Fetched page (localitiesAge):', res.data);
 	      const material = res.data;
 	      // results.forEach(material => {
@@ -1652,6 +1926,7 @@
 	fetchMineralsImaList() {
 	  this.geomaterials = [];
 	  this.fetchMineralsImaListPage("https://api.mindat.org/minerals_ima/")
+	  this.cancelRequest = false; // 重置取消标志为 false
 	},
 	fetchMineralsImaListPage(url) {
 	  uni.request({
@@ -1664,6 +1939,10 @@
 	      // description: this.description
 	    },
 	    success: (res) => {
+			if (this.cancelRequest) {
+			          console.log('Request canceled after receiving response.');
+			          return; // 如果取消标志为 true，直接返回
+			        }
 	      console.log('Fetched page (mineralsImaList):', res.data);
 	      const results = res.data.results;
 	      results.forEach(material => {
@@ -1718,46 +1997,7 @@
 	    }
 	  });
 	},
-	fetchLocgeoregion2List() {
-	  this.geomaterials = [];
-	  this.fetchLocgeoregion2ListPage("https://api.mindat.org/locgeoregion2/");
-	},
 	
-	fetchLocgeoregion2ListPage(url) {
-	  uni.request({
-	    url: url,
-	    method: 'GET',
-	    header: {
-	      'Authorization': 'Token 99ef26e16c7d6eca9941af072bf5532f'
-	    },
-	    success: (res) => {
-	      console.log('Fetched page (locgeoregion2List):', res.data);
-	      const features = res.data.results.features;
-	      features.forEach(feature => {
-	        // 提取 coordinates 数据
-	        const coordinates = feature.geometry.coordinates[0];
-	        const coordinatesString = coordinates.map(coord => `(${coord[0]}, ${coord[1]})`).join('; ');
-	
-	        // 将所有属性添加到 geomaterials 数组中
-	        this.geomaterials.push({
-	          id: feature.id,
-	          type: feature.type,
-	          geometry: {
-	            type: feature.geometry.type,
-	            coordinates: coordinatesString // 将坐标格式化为字符串
-	          },
-	          properties: feature.properties
-	        });
-	      });
-	      if (res.data.next) {
-	        this.fetchLocgeoregion2ListPage(res.data.next);
-	      }
-	    },
-	    fail: (err) => {
-	      console.error('Error fetching list (locgeoregion2List):', err);
-	    }
-	  });
-	},
 	downloadCSV(){
 		downloadDataCSV(this.geomaterials,this.selectedFunction);
 		
@@ -1949,5 +2189,8 @@
   
   .info-block p, .coordinates-block p, .properties-block p {
     margin: 5px 0;
+  }
+  * {
+    user-select: text;
   }
 </style>
