@@ -731,6 +731,46 @@ export function downloadDataCSV(geomaterials, selectedFunction) {
 				});
 			});
 		}
+	} else if (selectedFunction === 'imastatus') {
+		const csvData = generateCSVData(geomaterials, selectedFunction);
+		// 检查当前平台并处理不同的逻辑
+		if (process.env.VUE_APP_PLATFORM === 'h5') {
+			// H5端下载 CSV 文件
+			const link = document.createElement('a');
+			link.setAttribute('href', csvData); // 如果 csvData 是以 "data:text/csv;charset=utf-8," 开头的，确保这里正确处理
+			link.setAttribute('download', 'imastatus.csv');
+			document.body.appendChild(link); // Required for FF
+			link.click();
+			document.body.removeChild(link);
+		} else {
+			const csvData = generateCSVData(geomaterials, selectedFunction).replace(/^data:text\/csv;charset=utf-8,/,
+				'');
+			const fileName = 'imastatus.csv';
+
+			// 获取文件系统对象
+			plus.io.requestFileSystem(plus.io.PRIVATE_DOC, function(fs) {
+				// 创建文件
+				fs.root.getFile(fileName, {
+					create: true
+				}, function(fileEntry) {
+					// 创建写入流
+					fileEntry.createWriter(function(writer) {
+						writer.write(csvData);
+
+						// 保存成功后，使用uni.openDocument或plus.runtime.openFile打开文件
+						uni.showToast({
+							title: '文件已保存',
+							icon: 'success'
+						});
+
+						// 打开文件
+						plus.runtime.openFile(fileEntry.fullPath);
+					}, function(e) {
+						console.log('文件写入失败: ' + e.message);
+					});
+				});
+			});
+		}
 	} else if (selectedFunction === 'retrievedbycombined') {
 		const csvData = generateCSVData(geomaterials, selectedFunction);
 		// 检查当前平台并处理不同的逻辑
@@ -1803,6 +1843,46 @@ export function downloadDataTXT(geomaterials, selectedFunction) {
 			const csvData = generateCSVData(geomaterials, selectedFunction).replace(/^data:text\/csv;charset=utf-8,/,
 				'');
 			const fileName = 'entrytype.txt';
+
+			// 获取文件系统对象
+			plus.io.requestFileSystem(plus.io.PRIVATE_DOC, function(fs) {
+				// 创建文件
+				fs.root.getFile(fileName, {
+					create: true
+				}, function(fileEntry) {
+					// 创建写入流
+					fileEntry.createWriter(function(writer) {
+						writer.write(csvData);
+
+						// 保存成功后，使用uni.openDocument或plus.runtime.openFile打开文件
+						uni.showToast({
+							title: '文件已保存',
+							icon: 'success'
+						});
+
+						// 打开文件
+						plus.runtime.openFile(fileEntry.fullPath);
+					}, function(e) {
+						console.log('文件写入失败: ' + e.message);
+					});
+				});
+			});
+		}
+	} else if (selectedFunction === 'imastatus') {
+		const csvData = generateCSVData(geomaterials, selectedFunction);
+		// 检查当前平台并处理不同的逻辑
+		if (process.env.VUE_APP_PLATFORM === 'h5') {
+			// H5端下载 CSV 文件
+			const link = document.createElement('a');
+			link.setAttribute('href', csvData); // 如果 csvData 是以 "data:text/csv;charset=utf-8," 开头的，确保这里正确处理
+			link.setAttribute('download', 'imastatus.txt');
+			document.body.appendChild(link); // Required for FF
+			link.click();
+			document.body.removeChild(link);
+		} else {
+			const csvData = generateCSVData(geomaterials, selectedFunction).replace(/^data:text\/csv;charset=utf-8,/,
+				'');
+			const fileName = 'imastatus.txt';
 
 			// 获取文件系统对象
 			plus.io.requestFileSystem(plus.io.PRIVATE_DOC, function(fs) {
@@ -2929,7 +3009,47 @@ export function downloadDataTTL(geomaterials, selectedFunction) {
 			});
 		}
 	}
-
+	else if (selectedFunction === 'imastatus') {
+		const ttlData = generateTTLData(geomaterials, selectedFunction);
+		// 检查当前平台并处理不同的逻辑
+		if (process.env.VUE_APP_PLATFORM === 'h5') {
+			// H5端下载 CSV 文件
+			const link = document.createElement('a');
+			link.setAttribute('href', ttlData);
+			link.setAttribute('download', 'imastatus.ttl');
+			document.body.appendChild(link); // Required for FF
+			link.click();
+			document.body.removeChild(link);
+		} else {
+			const ttlData = generateTTLData(geomaterials, selectedFunction).replace(/^data:text\/turtle;charset=utf-8,/,
+				'');
+			const fileName = 'imastatus.ttl';
+	
+			// 获取文件系统对象
+			plus.io.requestFileSystem(plus.io.PRIVATE_DOC, function(fs) {
+				// 创建文件
+				fs.root.getFile(fileName, {
+					create: true
+				}, function(fileEntry) {
+					// 创建写入流
+					fileEntry.createWriter(function(writer) {
+						writer.write(ttlData);
+	
+						// 保存成功后，使用uni.openDocument或plus.runtime.openFile打开文件
+						uni.showToast({
+							title: '文件已保存',
+							icon: 'success'
+						});
+	
+						// 打开文件
+						plus.runtime.openFile(fileEntry.fullPath);
+					}, function(e) {
+						console.log('文件写入失败: ' + e.message);
+					});
+				});
+			});
+		}
+	}
 
 
 
@@ -4083,6 +4203,47 @@ export function downloadDataJSONLD(geomaterials, selectedFunction) {
 				});
 			});
 		}
+	} else if (selectedFunction === 'imastatus') {
+		const jsonldData = generateJSONLDData(geomaterials, selectedFunction);
+		// 检查当前平台并处理不同的逻辑
+		if (process.env.VUE_APP_PLATFORM === 'h5') {
+			// H5端下载 CSV 文件
+			const link = document.createElement('a');
+			link.setAttribute('href', jsonldData);
+			link.setAttribute('download', 'imastatus.jsonld');
+			document.body.appendChild(link); // Required for FF
+			link.click();
+			document.body.removeChild(link);
+		} else {
+			const jsonldData = generateJSONLDData(geomaterials, selectedFunction).replace(
+				/^data:application\/ld\+json;charset=utf-8,/,
+				'');
+			const fileName = 'imastatus.jsonld';
+
+			// 获取文件系统对象
+			plus.io.requestFileSystem(plus.io.PRIVATE_DOC, function(fs) {
+				// 创建文件
+				fs.root.getFile(fileName, {
+					create: true
+				}, function(fileEntry) {
+					// 创建写入流
+					fileEntry.createWriter(function(writer) {
+						writer.write(jsonldData);
+
+						// 保存成功后，使用uni.openDocument或plus.runtime.openFile打开文件
+						uni.showToast({
+							title: '文件已保存',
+							icon: 'success'
+						});
+
+						// 打开文件
+						plus.runtime.openFile(fileEntry.fullPath);
+					}, function(e) {
+						console.log('文件写入失败: ' + e.message);
+					});
+				});
+			});
+		}
 	} else if (selectedFunction === 'retrievedbycombined') {
 		const jsonldData = generateJSONLDData(geomaterials, selectedFunction);
 		// 检查当前平台并处理不同的逻辑
@@ -5176,6 +5337,47 @@ export function downloadDataRDF(geomaterials, selectedFunction) {
 				/^data:application\/ld\+json;charset=utf-8,/,
 				'');
 			const fileName = 'entrytype.xml';
+
+			// 获取文件系统对象
+			plus.io.requestFileSystem(plus.io.PRIVATE_DOC, function(fs) {
+				// 创建文件
+				fs.root.getFile(fileName, {
+					create: true
+				}, function(fileEntry) {
+					// 创建写入流
+					fileEntry.createWriter(function(writer) {
+						writer.write(jsonldData);
+
+						// 保存成功后，使用uni.openDocument或plus.runtime.openFile打开文件
+						uni.showToast({
+							title: '文件已保存',
+							icon: 'success'
+						});
+
+						// 打开文件
+						plus.runtime.openFile(fileEntry.fullPath);
+					}, function(e) {
+						console.log('文件写入失败: ' + e.message);
+					});
+				});
+			});
+		}
+	} else if (selectedFunction === 'imastatus') {
+		const jsonldData = generateJSONLDData(geomaterials, selectedFunction);
+		// 检查当前平台并处理不同的逻辑
+		if (process.env.VUE_APP_PLATFORM === 'h5') {
+			// H5端下载 CSV 文件
+			const link = document.createElement('a');
+			link.setAttribute('href', jsonldData);
+			link.setAttribute('download', 'imastatus.rdf');
+			document.body.appendChild(link); // Required for FF
+			link.click();
+			document.body.removeChild(link);
+		} else {
+			const jsonldData = generateJSONLDData(geomaterials, selectedFunction).replace(
+				/^data:application\/ld\+json;charset=utf-8,/,
+				'');
+			const fileName = 'imastatus.xml';
 
 			// 获取文件系统对象
 			plus.io.requestFileSystem(plus.io.PRIVATE_DOC, function(fs) {
