@@ -143,6 +143,10 @@
 		  <text class="section-content">检索具有给定条目类型的地质材料。</text>
 		</view>
 		<view class="section">
+		  <text class="section-title">geomaterials_imastatus(imastatus):</text>
+		  <text class="section-content">检索ima许可的地质材料。</text>
+		</view>
+		<view class="section">
 		  <text class="section-title">geomaterial_retrieved_by_combined_conditions(retrievedbycombined):</text>
 		  <text class="section-content">检索满足多种联合条件的地质材料。</text>
 		</view>
@@ -303,9 +307,6 @@ export default {
   color: #4CAF50; /* 设置不同的字体颜色，例如绿色 */
 }
 
-
-
-
 .text-container {
   padding: 16px;
   background-color: #f9f9f9;
@@ -327,4 +328,7 @@ export default {
   font-size: 14px;
   margin-top: 10px;
 }
+ * {
+    user-select: text;
+  }
 </style>
