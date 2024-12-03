@@ -19,7 +19,7 @@ HBuilderX是通用的前端开发工具，但为uni-app做了特别强化。HBui
 2.使用Git克隆仓库
 
 ```coffee
-git clone https://github.com/1758310694/OneMineralogy App.git
+[git clone https://github.com/1758310694/OneMineralogy App.git](https://github.com/1758310694/OneMineralogy-App.git)
 ```
 
 **运行**
