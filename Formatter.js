@@ -190,7 +190,21 @@ export function generateCSVData(geomaterials, selectedFunction) {
 			let row = `${name},${elements},${csystem},${cleavage},${cleavagetype}`;
 			csvContent += row + "\n";
 		});
-	} else if (selectedFunction === 'name' || selectedFunction === 'q' || selectedFunction === 'id') {
+	} else if (selectedFunction === 'name') {
+		csvContent += "id,name,elements,mindat_formula,ima_status\n"; // CSV头
+
+		geomaterials.forEach(material => {
+			let id = material.id || '';
+			let name = material.name.replace(/,/g, ''); // 去除名称中的逗号，以免干扰表格格式
+			let elements = Array.isArray(material.elements) ? 
+			            `"${material.elements.join(',')}"` : ''; // 确保 elements 是数组后再调用 .join
+			let mindat_formula = material.mindat_formula ?
+				`"${material.mindat_formula.replace(/"/g, '""').replace(/\n/g, ' ').replace(/#/g, '')}"` : ''|| '';
+			let ima_status = `"${material.ima_status.join(',')}"`;
+			let row = `${id},${name},${elements},${mindat_formula},${ima_status}`;
+			csvContent += row + "\n";
+		});
+	} else if (selectedFunction === 'q' || selectedFunction === 'id') {
 		csvContent += "id,name\n"; // CSV头
 
 		geomaterials.forEach(material => {
@@ -220,6 +234,22 @@ export function generateCSVData(geomaterials, selectedFunction) {
 			csvContent += row + "\n";
 		});
 	}
+	else if (selectedFunction === 'imastatus') {
+		csvContent += "id,name,elements,ima_formula,ima_status\n"; // CSV头
+	
+		geomaterials.forEach(material => {
+			let id = material.id || '';
+			let name = material.name.replace(/,/g, ''); // 去除名称中的逗号，以免干扰表格格式
+			let elements = Array.isArray(material.elements) ?
+			            `"${material.elements.join(',')}"` : ''; // 确保 elements 是数组后再调用 .join
+			let ima_formula = material.ima_formula ?
+				`"${material.ima_formula.replace(/"/g, '""').replace(/\n/g, ' ').replace(/#/g, '')}"` : '';
+			let ima_status = `"${material.ima_status.join(',')}"`;
+			let row = `${id},${name},${elements},${ima_formula},${ima_status}`;
+			csvContent += row + "\n";
+		});
+	}
+	
 	if (selectedFunction === 'retrievedbycombined') {
 		csvContent += "id,name,elements,hmin,hmax,csystem,ima_status,entrytype\n"; // CSV头
 
@@ -235,7 +265,11 @@ export function generateCSVData(geomaterials, selectedFunction) {
 			let csystem = material.csystem || '';
 			let ima_status = `"${material.ima_status.join(',')}"`;
 			let entrytype = material.entrytype;
-			let row = `${id},${name},${elements},${hmin},${hmax},${csystem},${ima_status},${entrytype}`;
+			let locality = material.locality
+			    ? `"${material.locality.map(item => item.toString()).join(', ')}"`  // 将每个大数字转为字符串
+			    : '';
+
+			let row = `${id},${name},${elements},${hmin},${hmax},${csystem},${ima_status},${entrytype},${locality}`;
 			csvContent += row + "\n";
 		});
 	} else if (selectedFunction === 'countrylist' || selectedFunction === 'localitiesid') {
@@ -526,7 +560,21 @@ export function generateTTLData(geomaterials, selectedFunction) {
 			ttlContent += `  mindat:cleavagetype "${material.cleavagetype.replace(/\n/g, ' ').trim()}" .\n\n`;
 
 		});
-	} else if (selectedFunction === 'name' || selectedFunction === 'q' || selectedFunction === 'id') {
+	} else if (selectedFunction === 'name') {
+		geomaterials.forEach((material, index) => {
+			// 使用索引生成 subject（如 < 1 >, < 2 > 等）
+			let subject = `<${index + 1}>`;
+
+			// 生成每个 material 的 TTL 数据
+			ttlContent += `${subject} a mindat:Geomaterials , schema:Dataset , gsog:Mineral_Material ;\n`;
+			ttlContent += `  mindat:id "${material.id}" ;\n\n`;
+			ttlContent += `  mindat:name "${material.name}" .\n`;
+			ttlContent += `  mindat:elements "${material.elements}" ;\n\n`;
+			ttlContent +=
+				`  mindat:mindat_formula "${material.mindat_formula.replace(/"/g, '""').replace(/\n/g, ' ').replace(/#/g, '')}" ;\n`;
+			ttlContent += `  mindat:ima_status "${material.ima_status}" .\n`;
+		});
+	} else if (selectedFunction === 'q' || selectedFunction === 'id') {
 		geomaterials.forEach((material, index) => {
 			// 使用索引生成 subject（如 < 1 >, < 2 > 等）
 			let subject = `<${index + 1}>`;
@@ -558,6 +606,20 @@ export function generateTTLData(geomaterials, selectedFunction) {
 			ttlContent += `  mindat:id "${material.id}" ;\n\n`;
 			ttlContent += `  mindat:name "${material.name}" ;\n`;
 			ttlContent += `  mindat:entrytype "${material.entrytype}" .\n`;
+		});
+	}
+	else if (selectedFunction === 'imastatus') {
+		geomaterials.forEach((material, index) => {
+			// 使用索引生成 subject（如 < 1 >, < 2 > 等）
+			let subject = `<${index + 1}>`;
+	
+			// 生成每个 material 的 TTL 数据
+			ttlContent += `${subject} a mindat:Geomaterials , schema:Dataset , gsog:Mineral_Material ;\n`;
+			ttlContent += `  mindat:id "${material.id}" ;\n\n`;
+			ttlContent += `  mindat:name "${material.name}" ;\n`;
+			ttlContent += `  mindat:elements "${material.elements}" ;\n\n`;
+			ttlContent += `  mindat:ima_formula "${material.ima_formula}" .\n`;
+			ttlContent += `  mindat:ima_status "${material.ima_status}" .\n`;
 		});
 	}
 	if (selectedFunction === 'retrievedbycombined') {
@@ -912,7 +974,25 @@ export function generateJSONLDData(geomaterials, selectedFunction) {
 				jsonldObject["@graph"].push(jsonldData);
 			}
 		});
-	} else if (selectedFunction === 'name' || selectedFunction === 'q' || selectedFunction === 'id') {
+	} else if (selectedFunction === 'name') {
+		geomaterials.forEach((material) => {
+			// 确保 material 存在并且有期望的属性
+			if (material) {
+				let jsonldData = {
+					"@type": ["mindat:Geomaterials", "schema:Dataset", "gsog:Mineral_Material"],
+					"mindat:id": material.id,
+					"mindat:name": material.name,
+					"mindat:elements": material.elements,
+					"mindat:mindat_formula": material.mindat_formula.replace(/"/g, '""').replace(/\n/g, ' ')
+						.replace(/#/g, ''),
+					"mindat:ima_status": material.ima_status
+				};
+
+				// 将每个物质的数据添加到 @graph 中
+				jsonldObject["@graph"].push(jsonldData);
+			}
+		});
+	} else if (selectedFunction === 'q' || selectedFunction === 'id') {
 		geomaterials.forEach((material) => {
 			// 确保 material 存在并且有期望的属性
 			if (material) {
@@ -957,7 +1037,25 @@ export function generateJSONLDData(geomaterials, selectedFunction) {
 			}
 		});
 	}
-
+	else if (selectedFunction === 'imastatus') {
+		geomaterials.forEach((material) => {
+			// 确保 material 存在并且有期望的属性
+			if (material) {
+				let jsonldData = {
+					"@type": ["mindat:Geomaterials", "schema:Dataset", "gsog:Mineral_Material"],
+					"mindat:id": material.id,
+					"mindat:name": material.name,
+					"mindat:elements": material.elements,
+					"mindat:ima_formula": material.ima_formula.replace(/"/g, '""').replace(/\n/g, ' ')
+						.replace(/#/g, ''),
+					"mindat:ima_status": material.ima_status
+				};
+	
+				// 将每个物质的数据添加到 @graph 中
+				jsonldObject["@graph"].push(jsonldData);
+			}
+		});
+	}
 	if (selectedFunction === 'retrievedbycombined') {
 		geomaterials.forEach((material) => {
 			// 确保 material 存在并且有期望的属性
