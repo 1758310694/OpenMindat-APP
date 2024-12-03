@@ -32,6 +32,7 @@
 		<input v-if="selectedFunction === 'retrievedbycombined'" class="element-input" type="text" step="any" v-model="maxHardness" placeholder="Enter given hardness_max" />
 		<input v-if="selectedFunction === 'retrievedbycombined'" class="element-input" type="text" step="any" v-model="csystem" placeholder="Enter given crystal_system" />
 		<input v-if="selectedFunction === 'retrievedbycombined'" class="element-input" type="text" step="any" v-model="imastatus" placeholder="Enter given ima_status" />
+		<input v-if="selectedFunction === 'retrievedbycombined'" class="element-input" type="text" step="any" v-model="expand" placeholder="Enter given expand field" />
 		<input v-if="selectedFunction === 'retrievedbycombined'" class="element-input" type="text" step="any" v-model="entrytype" placeholder="Enter given entrytype" />
 		<input v-if="selectedFunction === 'countrylist'" class="element-input" type="text" step="any" v-model="country" placeholder="Enter given country" />
 		<input v-if="selectedFunction === 'localitiesid'" class="element-input" type="text" step="any" v-model="localitiesid" placeholder="Enter given id" />
@@ -215,6 +216,9 @@
 			  	<p><strong>Elements:</strong> {{ material.elements }}</p>
 				<p><strong>Ima_formula:</strong> {{ material.ima_formula }}</p>
 				<p><strong>Ima_status:</strong> {{ material.ima_status }}</p>
+				<p><strong>Ima_notes:</strong> {{ material.ima_notes }}</p>
+				<p><strong>Approval_year:</strong> {{ material.approval_year }}</p>
+				<p><strong>Ima_history:</strong> {{ material.ima_history }}</p>
 			  </template>
 			  <template v-if="selectedFunction === 'retrievedbycombined'">
 			  	<p><strong>Id:</strong> {{ material.id }}</p>
@@ -225,6 +229,7 @@
 				<p><strong>Csystem:</strong> {{ material.csystem }}</p>
 				<p><strong>IMA_status:</strong> {{ material.ima_status }}</p>
 				<p><strong>Entrytype:</strong> {{ material.entrytype }}</p>		
+				<p><strong>Locality:</strong> {{ material.locality }}</p>
 			  </template>
 			  <template v-if="selectedFunction === 'countrylist' || selectedFunction === 'localitiesid'">
 			  	<p><strong>Id:</strong> {{ material.id }}</p>
@@ -265,6 +270,8 @@
 			  	<p><strong>Type_localities:</strong> {{ material.type_localities }}</p>
 			  	<p><strong>Ima_formula:</strong> {{ material.ima_formula }}</p>
 			  	<p><strong>Ima_status:</strong> {{ material.ima_status }}</p>
+				<p><strong>Ima_notes:</strong> {{ material.ima_notes }}</p>
+				<p><strong>Ima_year:</strong> {{ material.ima_year }}</p>
 			  </template>
 			  <template v-if="selectedFunction === 'mineralsImaRetrieve'">
 				<p><strong>Id:</strong> {{ material.id }}</p>
@@ -360,6 +367,7 @@
 		localitiesExcludeElementInput:null,
 		ageid:null,
 		imaid:null,
+		expand:null,
 		cancelRequest: false, // 用于控制是否取消请求
       }
     },
@@ -1548,6 +1556,9 @@
 	          elements: material.elements,
 			  ima_formula:material.ima_formula,
 			  ima_status:material.ima_status,
+			  ima_notes:material.ima_status,
+			  approval_year:material.approval_year,
+			  ima_history:material.ima_history,
 	        });
 	      });
 	      if (res.data.next) {
@@ -1587,6 +1598,9 @@
 	  if (this.imastatus) {
 	    params.ima_status = this.imastatus;
 	  }
+	  if (this.expand) {
+	    params.expand = this.expand;
+	  }
 	  if (this.entrytype) {
 	    params.entrytype = this.entrytype;
 	  }
@@ -1616,6 +1630,7 @@
 	          csystem: material.csystem,
 	          ima_status: material.ima_status,
 	          entrytype: material.entrytype,
+			  locality:material.locality
 	        });
 	      });
 	
@@ -1935,7 +1950,7 @@
 	    header: {
 	      'Authorization': 'Token 99ef26e16c7d6eca9941af072bf5532f'
 	    },
-	    data: {
+	    data: { 
 	      // description: this.description
 	    },
 	    success: (res) => {
@@ -1951,8 +1966,8 @@
 	          type_localities: material.type_localities,
 			  ima_formula:material.ima_formula,
 			  ima_status:material.ima_status,
-
-	          
+			  ima_notes:material.ima_notes,
+			  ima_year:material.ima_year
 	        });
 	      });
 	      if (res.data.next) {
