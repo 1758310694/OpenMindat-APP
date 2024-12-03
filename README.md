@@ -1,4 +1,4 @@
-# OpenMindat-APP
+# OneMineralogy App
 用于从OpenMindat Data API检索获取Mindat开放数据的APP
 
 ### 概述
@@ -19,7 +19,7 @@ HBuilderX是通用的前端开发工具，但为uni-app做了特别强化。HBui
 2.使用Git克隆仓库
 
 ```coffee
-git clone https://github.com/1758310694/OpenMindat-APP.git
+git clone https://github.com/1758310694/OneMineralogy App.git
 ```
 
 **运行**
@@ -43,18 +43,7 @@ header: {
           }
 ```
 
-**App使用说明**
 
-1、在功能选择器中下拉选择检索功能
-
-2、在文本输入框中根据默认占位符提示输入查询参数值，详情可见API文档https://api.mindat.org/schema/redoc/
-
-3、点击Search按钮进行查询操作;
-
-4、点击Download按钮后选择目标格式后进行下载。
-
-
-<img src="/static/image2/use.png" width="25%"> <img src="/static/image2/use1.png" width="25%">
 
 
 
